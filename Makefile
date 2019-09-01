@@ -16,7 +16,7 @@ LIBRMATH = $(shell pkg-config --variable=libdir libRmath)/libRmath$(DLLEXT)
 
 all: rmath.h rmath.c rmath.urs rmath.ur rmath.o
 	${M4} ${M4FLAGS} ${M4SCRIPT} -D LIBRMATH=${LIBRMATH} rmath.urp.in > rmath.urp
-	./driver.sh cffi
+	./driver.sh test
 
 %.h: %.h.in
 	${M4} ${M4FLAGS} ${M4SCRIPT} $< > $*.h
@@ -37,4 +37,4 @@ clean:
 	rm rmath.urs || true
 	rm rmath.urp || true
 	rm rmath.o || true
-	rm cffi.exe || true
+	rm test.exe || true

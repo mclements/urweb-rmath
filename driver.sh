@@ -14,7 +14,7 @@ urweb -debug -boot -noEmacs "$1" || exit 1
 $TESTSRV -q -a 127.0.0.1 &
 echo $! >> $TESTPID
 sleep 1
-## wget http://localhost:8080/Cffi/main -O -
-firefox --new-tab http://localhost:8080/Cffi/main
+## wget http://localhost:8080/Test/main -O -
+firefox --new-tab http://localhost:8080/Test/main
 sleep 1
 kill `cat $TESTPID`
