@@ -1,0 +1,4 @@
+ffi rmath
+include rmath.h
+link rmath.o
+link LIBRMATH
