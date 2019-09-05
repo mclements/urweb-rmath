@@ -1,0 +1,41 @@
+
+divert(`-1')dnl
+
+define(`downcase', `translit(`$*', `A-Z', `a-z')')
+
+define(`TYPE',`dnl
+ifelse($1,int,int,
+$1,double,float,
+$1)')
+
+define(`CONSTANT',`(* $1 *)
+val downcase($2) : float')
+define(`CONSTANT',`')
+
+define(`FUNCTION0',`(* $1 *)
+val downcase($2) : unit -> float')
+
+define(`FUNCTION1',`(* $1 *)
+val downcase($2) : TYPE($3) -> float')
+
+define(`FUNCTION2',`(* $1 *)
+val downcase($2) : TYPE($3) -> TYPE($5) -> float')
+
+define(`FUNCTION3',`(* $1 *)
+val downcase($2) : TYPE($3) -> TYPE($5) -> TYPE($7) -> float')
+
+define(`FUNCTION4',`(* $1 *)
+val downcase($2) : TYPE($3) -> TYPE($5) -> TYPE($7) -> TYPE($9) -> float')
+
+define(`FUNCTION5',`(* $1 *)
+val downcase($2) : TYPE($3) -> TYPE($5) -> TYPE($7) -> TYPE($9) -> TYPE($11) -> float')
+
+define(`FUNCTION6',`(* $1 *)
+val downcase($2) : TYPE($3) -> TYPE($5) -> TYPE($7) -> TYPE($9) -> TYPE($11) -> TYPE($13) -> float')
+
+divert(`1')dnl
+include(`rmath-template.m4')dnl
+(* imax2(x,y) *)
+val imax2 : int -> int -> int
+(* imin2(x,y) *)
+val imin2 : int -> int -> int

@@ -4,7 +4,7 @@ divert(`-1')dnl
 define(`downcase', `translit(`$*', `A-Z', `a-z')')
 
 define(`CONSTANT',`(* $1 *)
-val downcase($2) = $3;')
+val downcase($2) = $3')
 
 define(`FUNCTION0',`(* $1 *)')
 define(`FUNCTION1',`(* $1 *)')
@@ -15,9 +15,11 @@ define(`FUNCTION5',`(* $1 *)')
 define(`FUNCTION6',`(* $1 *)')
 
 divert(`1')dnl
+open Rmathffi
 include(`rmath-template.m4')dnl
 (* imax2(x,y) *)
 (* imin2(x,y) *)
-(* val pnorm=pnorm5 *)
-(* val qnorm=qnorm5 *)
-(* val dnorm=dnorm4 *)
+val pnorm = pnorm5
+val qnorm = qnorm5
+val dnorm = dnorm4
+val log1pexp = rf_log1pexp

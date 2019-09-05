@@ -1,0 +1,89 @@
+#include "urweb/urweb.h"
+
+#define MATHLIB_STANDALONE
+#include <Rmath.h>
+
+double Rf_log1pexp(double);
+
+divert(`-1')dnl
+
+define(`downcase', `translit(`$*', `A-Z', `a-z')')
+
+define(`TYPE',`dnl
+ifelse($1,int,uw_Basis_int,
+$1,double,uw_Basis_float,
+$1)')
+
+define(`CONSTANT',`// constant $2 defined in urweb code')
+
+define(`FUNCTION0',`// $1
+uw_Basis_float uw_Rmathffi_$2(uw_context ctx, uw_unit u) {
+  return $2();
+}')
+
+define(`FUNCTION1',`// $1
+uw_Basis_float uw_Rmathffi_`'downcase($2)`'(uw_context ctx, TYPE($3) $4) {
+  return $2($4);
+}')
+
+define(`FUNCTION2',`// $1
+uw_Basis_float uw_Rmathffi_$2(uw_context ctx, TYPE($3) $4, TYPE($5) $6) {
+  return $2($4,$6);
+}')
+
+define(`FUNCTION3',`// $1
+uw_Basis_float uw_Rmathffi_$2(uw_context ctx, TYPE($3) $4, TYPE($5) $6, TYPE($7) $8) {
+  return $2($4,$6,$8);
+}')
+
+define(`FUNCTION4',`// $1
+uw_Basis_float uw_Rmathffi_$2(uw_context ctx, TYPE($3) $4, TYPE($5) $6, TYPE($7) $8, TYPE($9) $10) {
+  return $2($4,$6,$8,$10);
+}')
+
+define(`FUNCTION5',`// $1
+uw_Basis_float uw_Rmathffi_$2(uw_context ctx, TYPE($3) $4, TYPE($5) $6, TYPE($7) $8, TYPE($9) $10, TYPE($11) $12) {
+  return $2($4,$6,$8,$10,$12);
+}')
+
+define(`FUNCTION6',`// $1
+uw_Basis_float uw_Rmathffi_$2(uw_context ctx, TYPE($3) $4, TYPE($5) $6, TYPE($7) $8, TYPE($9) $10, TYPE($11) $12, TYPE($13) $14) {
+  return $2($4,$6,$8,$10,$12,$14);
+}')
+
+divert(`1')dnl
+include(`rmath-template.m4')dnl
+
+// imax2(x,y)
+uw_Basis_int uw_Rmathffi_imax2(uw_context ctx, uw_Basis_int x, uw_Basis_int y) {
+	 return imax2(x,y);
+}
+// imin2(x,y)
+uw_Basis_int uw_Rmathffi_imin2(uw_context ctx, uw_Basis_int x, uw_Basis_int y) {
+	 return imin2(x,y);
+}
+// set_seed(x,y)
+uw_Basis_unit uw_Rmathffi_set_seed(uw_context ctx, uw_Basis_int x, uw_Basis_int y) {
+  set_seed(x,y);
+}
+/* // get_seed(x,y) */
+/* EXTERNML value r_get_seed(value dummy) { */
+/*   value tup = alloc_tuple(2);	/\* Allocate 2-element tuple in ML heap *\/ */
+/*   /\* Must, in general, use modify to update because the GC is generational: *\/ */
+/*   int x, y; */
+/*   get_seed(&x, &y); */
+/*   modify(&Field(tup, 0), MosWrite(int)(x)); */
+/*   modify(&Field(tup, 1), MosWrite(int)(y)); */
+/*   return tup; */
+/* } */
+/* // lgammafn_sign(x) */
+/* EXTERNML value r_lgammafn_sign(value v) { */
+/*   value tup = alloc_tuple(2);	/\* Allocate 2-element tuple in ML heap *\/ */
+/*   /\* Must, in general, use modify to update because the GC is generational: *\/ */
+/*   double x = MosRead(double)(v); */
+/*   int i; */
+/*   double y = lgammafn_sign(x, &i); */
+/*   modify(&Field(tup, 0), MosWrite(double)(y)); */
+/*   modify(&Field(tup, 1), MosWrite(int)(i)); */
+/*   return tup; */
+/* } */

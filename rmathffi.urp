@@ -1,6 +1,4 @@
 ffi rmathffi
 include rmathffi.h
 link rmathffi.o
-link LIBRMATH
-
-rmath
+link /usr/lib/libRmath.so

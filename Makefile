@@ -1,4 +1,4 @@
-.SUFFIXES: .in .c.in .c .o .sml
+# .SUFFIXES: .c.in .h.in .urs.in .ur.in .urp.in .o
 
 M4       = m4
 M4FLAGS  =
@@ -14,9 +14,11 @@ endif
 
 LIBRMATH = $(shell pkg-config --variable=libdir libRmath)/libRmath$(DLLEXT)
 
-all: rmath.h rmath.c rmath.urs rmath.ur rmath.o
-	${M4} ${M4FLAGS} ${M4SCRIPT} -D LIBRMATH=${LIBRMATH} rmath.urp.in > rmath.urp
+all: rmathffi.h rmathffi.c rmathffi.urs rmathffi.o rmath.ur rmath.urs rmath.urp
 	./driver.sh test
+
+rmath.urp: rmath.urp.in
+	${M4} ${M4FLAGS} ${M4SCRIPT} -D LIBRMATH=${LIBRMATH} rmath.urp.in > rmath.urp
 
 %.h: %.h.in
 	${M4} ${M4FLAGS} ${M4SCRIPT} $< > $*.h
@@ -31,10 +33,5 @@ all: rmath.h rmath.c rmath.urs rmath.ur rmath.o
 	${M4} ${M4FLAGS} ${M4SCRIPT} $< > $*.ur
 
 clean:
-	rm rmath.h || true
-	rm rmath.c || true
-	rm rmath.ur || true
-	rm rmath.urs || true
-	rm rmath.urp || true
-	rm rmath.o || true
-	rm test.exe || true
+	rm -f rmathffi.h rmathffi.c rmathffi.urs rmathffi.o rmath.urp rmath.ur rmath.urs
+	rm -f test.exe
