@@ -1,8 +1,9 @@
-rmath.c
-rmath.o
-rmath.h
-rmath.ur
-rmath.urp
+rmathffi.c
+rmathffi.o
+rmathffi.h
+rmathffi.urs
 rmath.urs
+rmath.urp
+rmath.ur
 test.exe
 *~
