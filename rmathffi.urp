@@ -1,4 +1,0 @@
-ffi rmathffi
-include rmathffi.h
-link rmathffi.o
-link /usr/lib/libRmath.so
