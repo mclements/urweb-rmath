@@ -1,6 +1,10 @@
 debug
 library rmath
-file /style.css style.css
-allow url /style.css
+allow url http://www.pirilampo.org/styles/readtheorg/css/htmlize.css
+allow url http://www.pirilampo.org/styles/readtheorg/css/readtheorg.css
+allow url http://www.impredicative.com/ur/
+allow url https://cran.r-project.org/doc/manuals/r-release/R-admin.html
+rewrite style Test/content content
+library ../urweb-canvas/src/canvas
 
 test
