@@ -1,7 +1,7 @@
 style content
 
 open Rmath
-open Canvasjsffi
+open Chartjsffi
 
 val pi = 3.141592653589793
 
@@ -14,7 +14,7 @@ fun calc_f from eps to f =
 	loop from []
     end
 
-val calc_f2 = fn f => fn () => return (calc_f 0.0 0.001 (6.0*pi) f)
+val calc_f2 = fn f => fn () => return (calc_f 0.0 0.1 (6.0*pi) f)
 val calc_dnorm = calc_f2 (fn x => Rmath.dnorm x 3.0 0.5 0)
 val calc_sin = calc_f2 sin
 val calc_cos = calc_f2 cos
@@ -28,7 +28,7 @@ fun main () =
 		val x = List.mp (fn pr => pr.1) lst
 		val y = List.mp (fn pr => pr.2) lst
 	    in
-		canvasjsChart c x y
+		chartjsChart c x y
 	    end
     in
 	return <xml>
@@ -73,12 +73,11 @@ fun main () =
 		    <td><tt>Rmath.rnorm 0.0 1.0 </tt></td> <td> {[Rmath.rnorm 0.0 1.0]}</td>
 		  </tr>
 		</table>
-	    </div>
 	    <button value="Show sin plot" onclick={fn _ => lst <- calc_sin(); cvas <- xyplot lst; return ()}/>
 	    <button value="Show cos plot" onclick={fn _ => lst <- calc_cos(); cvas <- xyplot lst; return ()}/>
 	    <button value="Show sin plot (server)" onclick={fn _ => lst <- rpc(calc_sin()); cvs <- xyplot lst; return ()}/>
 	    <button value="Show dnorm plot (server)" onclick={fn _ => lst <- rpc(calc_dnorm()); cvas <- xyplot lst; return ()}/>
-	    <div id={c} style="height: 300px; width: 100%;">
+	    <canvas id={c} width="800" height="300"/>
 	    </div>
 	  </body>
 	</xml>
