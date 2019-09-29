@@ -30,6 +30,10 @@ function makeCanvasjs(id) {
 
 }
 
+function setTitle(chart,title) {
+    chart.title.set("text", title);
+}
+
 function idAsString(id) {
     return id;
 }
