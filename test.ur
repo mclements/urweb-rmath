@@ -1,24 +1,8 @@
 style content
 
 open Rmath
-open Canvas_FFI
 
 val pi = 3.141592653589793
-
-val black = make_rgba 0 0 0 1.0
-val white = make_rgba 255 255 255 1.0
-val red = make_rgba 255 0 0 1.0
-val green = make_rgba 0 255 0 1.0
-val blue = make_rgba 0 0 255 1.0
-val transparent = make_rgba 0 0 0 0.0
-
-val max_x = 800.0
-val max_y = 300.0
-
-fun make_transform n min_val max_val = (fn v => round((n-1.0)*(v - min_val)/(max_val - min_val))+1)
-
-val tr_x = make_transform max_x 0.0 (4.0*pi)
-val tr_y = make_transform max_y 1.0 (-1.0) (* reversed bounds *)
 
 (* val calc_f : float -> float -> float -> (float -> float) -> list (float * float) *)
 fun calc_f from eps to f =
@@ -36,30 +20,13 @@ val calc_cos = calc_f2 cos
 
 fun main () =
     c <- fresh;
-    (* dat <- source ([] : list (float * float)); *)
     let
 	fun xyplot (lst : list (float * float)) =
-	    ctx <- getContext2d c;
-	    setGlobalCompositeOperation ctx DestinationOver;
-	    clearRect ctx 0.0 0.0 max_x max_y;
-	    setFillStyle ctx (make_rgba 0 0 0 0.4);
-	    setStrokeStyle ctx red;
-	    save ctx;
 	    let
-		fun draw lst =
-		    let
-			fun loop lst = case lst of
-					   [] => stroke ctx
-					 | (x,fx) :: tl => (lineTo ctx (tr_x x) (tr_y fx); loop tl)
-		    in
-			beginPath ctx;
-			(case lst of
-			     (x,fx) :: tl => (moveTo ctx (tr_x x) (tr_y fx); loop tl)
-			   | [] => stroke ctx);
-			return ()
-		    end
+		val x = List.mp (fn pr => pr.1) lst
+		val y = List.mp (fn pr => pr.2) lst
 	    in
-		draw lst
+		return(Canvasjsffi.canvasjsChart c x y)
 	    end
     in
 	return <xml>
@@ -68,7 +35,7 @@ fun main () =
 	    <link href="http://www.pirilampo.org/styles/readtheorg/css/htmlize.css" rel="stylesheet" type="text/css"/>
 	    <link href="http://www.pirilampo.org/styles/readtheorg/css/readtheorg.css" rel="stylesheet" type="text/css"/>
 	  </head>
-	  <body>
+            <body>
 	    <div class={content}>
 	      <h1>urweb-rmath: an Ur/Web library for the Rmath library</h1>
 	      <p>This library provides a foreign function interface
@@ -105,11 +72,12 @@ fun main () =
 		  </tr>
 		</table>
 	    </div>
-	    <canvas id={c} height=300 width=800/>
-	    <button value="Show sin plot" onclick={fn _ => lst <- calc_sin(); xyplot lst}/>
-	    <button value="Show cos plot" onclick={fn _ => lst <- calc_cos(); xyplot lst}/>
-	    <button value="Show sin plot (server)" onclick={fn _ => lst <- rpc(calc_sin()); xyplot lst}/>
-	    <button value="Show dnorm plot (server)" onclick={fn _ => lst <- rpc(calc_dnorm()); xyplot lst}/>
+	      <button value="Show sin plot" onclick={fn _ => lst <- calc_sin(); xyplot lst}/>
+	      <button value="Show cos plot" onclick={fn _ => lst <- calc_cos(); xyplot lst}/>
+	      <button value="Show sin plot (server)" onclick={fn _ => lst <- rpc(calc_sin()); xyplot lst}/>
+	      <button value="Show dnorm plot (server)" onclick={fn _ => lst <- rpc(calc_dnorm()); xyplot lst}/>
+	    <div id={c} style="height: 300px; width: 100%;">
+	      </div>
 	  </body>
 	</xml>
     end

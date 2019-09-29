@@ -4,7 +4,13 @@ allow url http://www.pirilampo.org/styles/readtheorg/css/htmlize.css
 allow url http://www.pirilampo.org/styles/readtheorg/css/readtheorg.css
 allow url http://www.impredicative.com/ur/
 allow url https://cran.r-project.org/doc/manuals/r-release/R-admin.html
+allow url https://canvasjs.com/assets/script/canvasjs.min.js
+script https://canvasjs.com/assets/script/canvasjs.min.js
+ffi canvasjsffi
+file /canvasjsffi.js canvasjsffi.js
+script /canvasjsffi.js
+jsFunc Canvasjsffi.canvasjsChart = canvasjsChart
 rewrite style Test/content content
-library ../urweb-canvas/src/canvas
 
+$/list
 test
