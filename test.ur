@@ -1,6 +1,7 @@
 style content
 
 open Rmath
+open Canvasjsffi
 
 val pi = 3.141592653589793
 
@@ -20,14 +21,14 @@ val calc_cos = calc_f2 cos
 
 fun main () =
     c <- fresh;
-    (* cvas <- Canvasjsffi.makeCanvasjs c; *)
+    (* cvas <- makeCanvasjs c; *)
     let
 	fun xyplot (lst : list (float * float)) =
 	    let
 		val x = List.mp (fn pr => pr.1) lst
 		val y = List.mp (fn pr => pr.2) lst
 	    in
-		Canvasjsffi.canvasjsChart c x y
+		canvasjsChart c x y
 	    end
     in
 	return <xml>
