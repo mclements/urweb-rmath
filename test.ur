@@ -20,13 +20,14 @@ val calc_cos = calc_f2 cos
 
 fun main () =
     c <- fresh;
+    (* cvas <- Canvasjsffi.makeCanvasjs c; *)
     let
 	fun xyplot (lst : list (float * float)) =
 	    let
 		val x = List.mp (fn pr => pr.1) lst
 		val y = List.mp (fn pr => pr.2) lst
 	    in
-		return(Canvasjsffi.canvasjsChart c x y)
+		Canvasjsffi.canvasjsChart c x y
 	    end
     in
 	return <xml>
@@ -72,12 +73,12 @@ fun main () =
 		  </tr>
 		</table>
 	    </div>
-	      <button value="Show sin plot" onclick={fn _ => lst <- calc_sin(); xyplot lst}/>
-	      <button value="Show cos plot" onclick={fn _ => lst <- calc_cos(); xyplot lst}/>
-	      <button value="Show sin plot (server)" onclick={fn _ => lst <- rpc(calc_sin()); xyplot lst}/>
-	      <button value="Show dnorm plot (server)" onclick={fn _ => lst <- rpc(calc_dnorm()); xyplot lst}/>
+	    <button value="Show sin plot" onclick={fn _ => lst <- calc_sin(); cvas <- xyplot lst; return ()}/>
+	    <button value="Show cos plot" onclick={fn _ => lst <- calc_cos(); cvas <- xyplot lst; return ()}/>
+	    <button value="Show sin plot (server)" onclick={fn _ => lst <- rpc(calc_sin()); cvs <- xyplot lst; return ()}/>
+	    <button value="Show dnorm plot (server)" onclick={fn _ => lst <- rpc(calc_dnorm()); cvas <- xyplot lst; return ()}/>
 	    <div id={c} style="height: 300px; width: 100%;">
-	      </div>
+	    </div>
 	  </body>
 	</xml>
     end

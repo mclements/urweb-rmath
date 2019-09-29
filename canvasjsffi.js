@@ -21,7 +21,13 @@ function canvasjsChart(id, x, y) {
 
     chart.render();
 
-    // return chart;
+    return chart;
+}
+
+function makeCanvasjs(id) {
+
+    return new CanvasJS.Chart(id, {});
+
 }
 
 function idAsString(id) {

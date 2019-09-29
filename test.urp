@@ -10,6 +10,7 @@ ffi canvasjsffi
 file /canvasjsffi.js canvasjsffi.js
 script /canvasjsffi.js
 jsFunc Canvasjsffi.canvasjsChart = canvasjsChart
+jsFunc Canvasjsffi.makeCanvasjs = makeCanvasjs
 rewrite style Test/content content
 
 $/list
