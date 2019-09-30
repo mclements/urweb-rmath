@@ -24,16 +24,3 @@ function chartjsChart(id, x, y) {
 
     return chart;
 }
-
-function makeChartjs(id) {
-
-    return new Chart(id, {});
-
-}
-
-function idAsString(id) {
-    return id;
-}
-function stringAsId(s) {
-    return s;
-}

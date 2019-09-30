@@ -21,7 +21,6 @@ val calc_cos = calc_f2 cos
 
 fun main () =
     c <- fresh;
-    (* cvas <- makeCanvasjs c; *)
     let
 	fun xyplot (lst : list (float * float)) =
 	    let
