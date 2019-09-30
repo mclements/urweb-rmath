@@ -5,4 +5,4 @@ val makeChartjs : id -> transaction chartjschart
 val idAsString : id -> string
 val stringAsId : string -> id
 
-val canvas : bodyTag ([Width = string, Height = string] ++ boxAttrs)
+val canvas : bodyTag ([Width = int, Height = int] ++ boxAttrs)
