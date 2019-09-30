@@ -76,7 +76,7 @@ fun main () =
 	    <button value="Show cos plot" onclick={fn _ => lst <- calc_cos(); cvas <- xyplot lst; return ()}/>
 	    <button value="Show sin plot (server)" onclick={fn _ => lst <- rpc(calc_sin()); cvs <- xyplot lst; return ()}/>
 	    <button value="Show dnorm plot (server)" onclick={fn _ => lst <- rpc(calc_dnorm()); cvas <- xyplot lst; return ()}/>
-	    <canvas id={c} width="800" height="300"/>
+	    <canvas id={c} width=800 height=300/>
 	    </div>
 	  </body>
 	</xml>
