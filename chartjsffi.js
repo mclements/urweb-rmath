@@ -1,16 +1,15 @@
-function chartjsChart(id, x, y) {
+function chartjsChart(id, l) {
 
-    function listsToDataPoints(inx,iny) {
+    function listToDataPoints(l) {
 	var acc = [];
-	var xs = inx;
-	var ys = iny;
-	for (; xs !== null; xs=xs._2, ys=ys._2) {
-	    acc.push({x: xs._1, y: ys._1});
+	var ll = l;
+	for (; ll !== null; ll=ll._2) {
+	    acc.push({x: ll._1._1, y: ll._1._2});
 	}
 	return acc;
     }
 
-    var datapoints = listsToDataPoints(x,y);
+    var datapoints = listToDataPoints(l);
 
     var ctx = document.getElementById(id).getContext('2d');
     

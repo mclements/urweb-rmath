@@ -21,16 +21,7 @@ val calc_cos = calc_f2 cos
 
 fun main () =
     c <- fresh;
-    let
-	fun xyplot (lst : list (float * float)) =
-	    let
-		val x = List.mp (fn pr => pr.1) lst
-		val y = List.mp (fn pr => pr.2) lst
-	    in
-		chartjsChart c x y
-	    end
-    in
-	return <xml>
+    return <xml>
 	  <head>
 	    <title>urweb-rmath: an Ur/Web library for the Rmath library</title>
 	    <link href="http://www.pirilampo.org/styles/readtheorg/css/htmlize.css" rel="stylesheet" type="text/css"/>
@@ -72,12 +63,12 @@ fun main () =
 		    <td><tt>Rmath.rnorm 0.0 1.0 </tt></td> <td> {[Rmath.rnorm 0.0 1.0]}</td>
 		  </tr>
 		</table>
-	    <button value="Show sin plot" onclick={fn _ => lst <- calc_sin(); cvas <- xyplot lst; return ()}/>
-	    <button value="Show cos plot" onclick={fn _ => lst <- calc_cos(); cvas <- xyplot lst; return ()}/>
-	    <button value="Show sin plot (server)" onclick={fn _ => lst <- rpc(calc_sin()); cvs <- xyplot lst; return ()}/>
-	    <button value="Show dnorm plot (server)" onclick={fn _ => lst <- rpc(calc_dnorm()); cvas <- xyplot lst; return ()}/>
+	    <button value="Show sin plot" onclick={fn _ => lst <- calc_sin(); chart <- chartjsChart c lst; return ()}/>
+	    <button value="Show cos plot" onclick={fn _ => lst <- calc_cos(); chart <- chartjsChart c lst; return ()}/>
+	    <button value="Show sin plot (server)" onclick={fn _ => lst <- rpc(calc_sin()); chart <- chartjsChart c lst; return ()}/>
+	    <button value="Show dnorm plot (server)" onclick={fn _ => lst <- rpc(calc_dnorm()); chart <- chartjsChart c lst; return ()}/>
 	    <canvas id={c} width=800 height=300/>
 	    </div>
 	  </body>
-	</xml>
-    end
+    </xml>
+
