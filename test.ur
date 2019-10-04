@@ -15,7 +15,7 @@ fun calc_f from eps to f =
     end
 
 val calc_f2 = fn f => fn () => return (calc_f 0.0 0.1 (6.0*pi) f)
-fun calc_dnorm mu sigma = return(calc_f 0.0 0.1 5.0 (fn x => Rmath.dnorm x mu sigma 0))
+fun calc_dnorm mu sigma = return(calc_f 0.0 0.1 5.0 (fn x => dnorm x mu sigma 0))
 val calc_sin = calc_f2 sin
 val calc_cos = calc_f2 cos
 
@@ -77,13 +77,13 @@ fun main () =
 		<hr/>
 		<table>
 		  <tr><th>Expression</th><th>Value</th></tr>
-		  <tr><td><tt>Rmath.dnorm 0.0 0.0 1.0 0 </tt></td><td>{[Rmath.dnorm 0.0 0.0 1.0 0]}</td></tr>
-		  <tr><td><tt>Rmath.dnorm4 0.0 0.0 1.0 0 </tt></td><td>{[Rmath.dnorm4 0.0 0.0 1.0 0]}</td></tr>
-		  <tr><td><tt>Rmath.pnorm 1.96 0.0 1.0 0 0 </tt></td><td>{[Rmath.pnorm 1.96 0.0 1.0 0 0]}</td></tr>
-		  <tr><td><tt>Rmath.qnorm 0.975 0.0 1.0 1 0 </tt></td><td>{[Rmath.qnorm 0.975 0.0 1.0 1 0]}</td></tr>
-		  <tr><td><tt>Rmath.m_e </tt></td><td>{[Rmath.m_e]}</td></tr>
-		  <tr><td><tt>Rmath.rnorm 0.0 1.0 </tt></td><td>{[Rmath.rnorm 0.0 1.0]}</td></tr>
-		  <tr><td><tt>Rmath.rnorm 0.0 1.0 </tt></td><td>{[Rmath.rnorm 0.0 1.0]}</td></tr>
+		  <tr><td><tt>Rmath.dnorm 0.0 0.0 1.0 0 </tt></td><td>{[dnorm 0.0 0.0 1.0 0]}</td></tr>
+		  <tr><td><tt>dnorm4 0.0 0.0 1.0 0 </tt></td><td>{[dnorm4 0.0 0.0 1.0 0]}</td></tr>
+		  <tr><td><tt>pnorm 1.96 0.0 1.0 0 0 </tt></td><td>{[pnorm 1.96 0.0 1.0 0 0]}</td></tr>
+		  <tr><td><tt>qnorm 0.975 0.0 1.0 1 0 </tt></td><td>{[qnorm 0.975 0.0 1.0 1 0]}</td></tr>
+		  <tr><td><tt>m_e </tt></td><td>{[Rmath.m_e]}</td></tr>
+		  <tr><td><tt>rnorm 0.0 1.0 </tt></td><td>{[rnorm 0.0 1.0]}</td></tr>
+		  <tr><td><tt>rnorm 0.0 1.0 </tt></td><td>{[rnorm 0.0 1.0]}</td></tr>
 		</table>
 		</body>
 		</xml>
