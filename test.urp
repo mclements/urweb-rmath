@@ -13,5 +13,6 @@ jsFunc Chartjsffi.chartjsChart = chartjsChart
 jsFunc Chartjsffi.makeChartjs = makeChartjs
 rewrite style Test/content content
 
+$/option
 $/list
 test
