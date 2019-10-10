@@ -10,9 +10,13 @@ file /chartjsffi.js chartjsffi.js
 script /chartjsffi.js
 script https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js
 jsFunc Chartjsffi.chartjsChart = chartjsChart
-jsFunc Chartjsffi.makeChartjs = makeChartjs
+jsFunc Chartjsffi.chartjsChartJson = chartjsChartJson
+jsFunc Chartjsffi.chartjsChartStruct = chartjsChartStruct
 rewrite style Test/content content
 
+$/char
+$/string
+$/json
 $/option
 $/list
 test

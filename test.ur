@@ -1,5 +1,6 @@
 style content
 
+open Json
 open Rmath
 open Chartjsffi
 
@@ -20,8 +21,22 @@ val calc_sin = calc_f2 sin
 val calc_cos = calc_f2 cos
 
 fun dn [a] (_ : show a) (x : source a) : xbody = <xml>
-  <dyn signal={v <- signal x; return (txt v)}/>
+  <dyn signal={v <- signal x; return (txt v)}></dyn>
 </xml>
+						 
+type options = {Legend : bool}
+type float_pair = {X : float, Y : float}
+type dataset = {Data : list float_pair, Fill : bool, ShowLine : bool}
+type chartData = {Datasets : list dataset}
+type config = {ChartData : chartData, Options : options}
+
+val json_options : json options = json_record {Legend = "legend"}
+val json_float_pair : json float_pair = json_record {X = "x", Y = "y"}
+val json_dataset : json dataset = json_record {Data = "data", Fill = "fill", ShowLine = "showLine"}
+val json_chartData : json chartData = json_record {Datasets = "datasets"}
+val json_config : json config = json_record {ChartData="data", Options = "options"}
+
+fun pairToXY [a ::: Type] [b ::: Type] lst = List.mp (fn (x:a,y:b) => {X=x, Y=y}) lst
 
 fun main () =
     c <- fresh;
@@ -65,6 +80,18 @@ fun main () =
 			    return ()}></button>
 		<button value="Show dnorm plot (server)"
 		onclick={fn _ => plot_dnorm()}></button>
+		<button value="Show sin plot (server+JSON)"
+		onclick={fn _ => lst <- rpc(calc_sin());
+			    chart <- chartjsChartJson c (toJson {ChartData={Datasets={Data=pairToXY lst,
+										      Fill=False, ShowLine=True} :: []},
+								 Options = {Legend = False}});
+			    return ()}></button>
+		<button value="Show sin plot (server+struct)"
+		onclick={fn _ => lst <- rpc(calc_sin());
+			    chart <- chartjsChartStruct c {Data={Datasets={Data=pairToXY lst,
+									   Fill=False, ShowLine=True} :: []},
+							   Options = {Legend = False}};
+			    return ()}></button>
 		<p></p>
 		<crange source={mu} min={0.0} max={5.0} step={0.1}
 		onchange={plot_dnorm()}>
@@ -77,11 +104,11 @@ fun main () =
 		<hr/>
 		<table>
 		  <tr><th>Expression</th><th>Value</th></tr>
-		  <tr><td><tt>Rmath.dnorm 0.0 0.0 1.0 0 </tt></td><td>{[dnorm 0.0 0.0 1.0 0]}</td></tr>
+		  <tr><td><tt>Rmath.dnorm 0.0 0.0 1.0 0 </tt></td><td>{[Rmath.dnorm 0.0 0.0 1.0 0]}</td></tr>
 		  <tr><td><tt>dnorm4 0.0 0.0 1.0 0 </tt></td><td>{[dnorm4 0.0 0.0 1.0 0]}</td></tr>
 		  <tr><td><tt>pnorm 1.96 0.0 1.0 0 0 </tt></td><td>{[pnorm 1.96 0.0 1.0 0 0]}</td></tr>
 		  <tr><td><tt>qnorm 0.975 0.0 1.0 1 0 </tt></td><td>{[qnorm 0.975 0.0 1.0 1 0]}</td></tr>
-		  <tr><td><tt>m_e </tt></td><td>{[Rmath.m_e]}</td></tr>
+		  <tr><td><tt>m_e </tt></td><td>{[m_e]}</td></tr>
 		  <tr><td><tt>rnorm 0.0 1.0 </tt></td><td>{[rnorm 0.0 1.0]}</td></tr>
 		  <tr><td><tt>rnorm 0.0 1.0 </tt></td><td>{[rnorm 0.0 1.0]}</td></tr>
 		</table>
