@@ -13,8 +13,9 @@ function chartjsChart(id, l) {
 
     var ctx = document.getElementById(id).getContext('2d');
     
-    var chart = new Chart.Scatter(ctx,
+    var chart = new Chart(ctx,
 			  {
+			      type : 'scatter',
 			      data : {datasets: [{data : datapoints,
 						  fill : false,
 						  showLine : true}]},
@@ -41,6 +42,7 @@ function objectMap(object, mapFn) {
 }
 
 function urToObject(l) {
+    // case: null value
     if (l == null) {
 	return null;
     }
@@ -81,7 +83,7 @@ function chartjsChartStruct(id, obj) {
 
     var ctx = document.getElementById(id).getContext('2d');
 
-    var chart = new Chart.Scatter(ctx, urToObject(obj));
+    var chart = new Chart(ctx, urToObject(obj));
     
     return chart;
 }

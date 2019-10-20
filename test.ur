@@ -44,12 +44,9 @@ fun optionify [ts ::: {Type}] (fl : folder ts) (r : $ts) : $(optionify ts) =
 
 con data = list {X : float, Y : float}
 
-(* fun optionifyData args = *)
-(*     optionify(args -- #Data) ++ {Data = args.Data} *)
-    
 fun pairToXY [a ::: Type] [b ::: Type] lst = List.mp (fn (x:a,y:b) => {X=x, Y=y}) lst
 
-fun makeOptions args = update {Legend = None} (optionify args)
+fun makeOptions args = update {Legend = None, ShowLines = None} (optionify args)
 
 fun makeDataset args = update {Data=[] : data, Fill=None, ShowLine=None, Label=None, BorderColor=None} (optionify(args -- #Data) ++ {Data = args.Data}) 
 
@@ -97,15 +94,18 @@ fun main () =
 		onclick={fn _ => plot_dnorm()}></button>
 		<button value="Show sin+cos plot (server+struct)"
 		onclick={fn _ => lst <- rpc(calc_sin()); lst2 <- rpc(calc_cos());
-			    chart <- chartjsChartStruct c {Data={Datasets = (makeDataset {Data=pairToXY lst,
-									   Fill=False,
-									   ShowLine=True,
-									   BorderColor="red", Label="Sine"}) ::
-												   (makeDataset {Data=pairToXY lst2,
-									   Fill=False,
-									   ShowLine=True,
-									  BorderColor="blue", Label="Cosine"}) :: []},
-							   Options = makeOptions {}};
+			    chart <- chartjsChartStruct
+					 c
+					 {Typ="scatter", (* shortened keyword *)
+					  Data={Datasets = (makeDataset {Data=pairToXY lst,
+									 Fill=False,
+									 BorderColor="red",
+									 Label="Sine"}) ::
+							(makeDataset {Data=pairToXY lst2,
+								      Fill=False,
+								      BorderColor="blue",
+								      Label="Cosine"}) :: []},
+					  Options = makeOptions {ShowLines = True}};
 			    return ()}></button>
 		<p></p>
 		<crange source={mu} min={0.0} max={5.0} step={0.1}

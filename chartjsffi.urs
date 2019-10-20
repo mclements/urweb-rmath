@@ -5,7 +5,9 @@ type fullconfig = {Data: {Datasets : list {Data : list {X:float, Y:float},
 					   ShowLine : option bool,
 					   BorderColor : option string,
 					   Label : option string}},
-		   Options : {Legend : option bool}}
+		   Typ : string,
+		   Options : {Legend : option bool,
+			      ShowLines : option bool}}
 
 val chartjsChart : id -> list (float*float) -> transaction chartjschart
 
