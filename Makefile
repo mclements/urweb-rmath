@@ -14,11 +14,12 @@ endif
 
 LIBRMATH = $(shell pkg-config --variable=libdir libRmath)/libRmath$(DLLEXT)
 
-all: rmathffi.h rmathffi.c rmathffi.urs rmathffi.o rmath.ur rmath.urs rmath.urp
-	./driver.sh test
+all: test
 
-test: rmathffi.h rmathffi.c rmathffi.urs rmathffi.o rmath.ur rmath.urs rmath.urp
-	./driver.sh test 1
+src: rmathffi.h rmathffi.c rmathffi.urs rmathffi.o rmath.ur rmath.urs rmath.urp
+
+test: src
+	(pkill test.exe || true) && ./driver.sh test 1
 
 rmath.urp: rmath.urp.in
 	${M4} ${M4FLAGS} ${M4SCRIPT} -D LIBRMATH=${LIBRMATH} rmath.urp.in > rmath.urp

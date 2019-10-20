@@ -33,24 +33,23 @@ function chartjsChartJson(id, json_string) {
     return chart;
 }
 
-function objectMapUr(object, mapFn) {
+function objectMap(object, mapFn) {
     return Object.keys(object).reduce(function(result, key) {
-	if (key == "_Typ") {
-	    result["type"] = mapFn(object[key])
-	} else {
-	    result[key.substr(1,1).toLowerCase()+key.substr(2)] = mapFn(object[key])
-	}
+	result[key] = mapFn(object[key])
 	return result
     }, {})
 }
 
 function urToObject(l) {
+    // case: atom
     if (typeof(l) != 'object') {
 	return l;
     }
+    // case: JavaScript array (not used)
     else if (Array.isArray(l)) {
 	return l.map(urToObject);
     }
+    // case: Ur/Web list
     else if (Object.keys(l)[0] == '_1') {
 	var acc = [];
 	var ll = l;
@@ -59,8 +58,19 @@ function urToObject(l) {
 	}
 	return acc;
     }
+    // case: Ur/Web struct
     else {
-	return objectMapUr(l,urToObject);
+	return Object.keys(l).reduce(function(result, key) {
+	    var newkey = key.substr(1,1).toLowerCase()+key.substr(2);
+	    var y = urToObject(l[key]);
+	    if (newkey == "typ") {
+		newkey = "type";
+	    }
+	    if (y != null) {
+		result[newkey] = urToObject(l[key]);
+	    }
+	    return result;
+	}, {});
     }
 }
 
@@ -71,4 +81,11 @@ function chartjsChartStruct(id, obj) {
     var chart = new Chart.Scatter(ctx, urToObject(obj));
     
     return chart;
+}
+
+function chartjsChartStructDebug(id, obj) {
+
+    alert(JSON.stringify(urToObject(obj)));
+    
+    return chartjsChartStruct(id,obj);
 }

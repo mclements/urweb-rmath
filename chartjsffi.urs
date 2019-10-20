@@ -1,8 +1,10 @@
 
 type chartjschart
 type fullconfig = {Data: {Datasets : list {Data : list {X:float, Y:float},
-					   Fill : bool, ShowLine : bool}},
-		   Options : {Legend : bool}}
+					   Fill : option bool,
+					   ShowLine : option bool,
+					   BorderColor : option string}},
+		   Options : {Legend : option bool}}
 
 val chartjsChart : id -> list (float*float) -> transaction chartjschart
 

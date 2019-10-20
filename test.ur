@@ -24,6 +24,23 @@ fun dn [a] (_ : show a) (x : source a) : xbody = <xml>
   <dyn signal={v <- signal x; return (txt v)}></dyn>
 </xml>
 						 
+fun expand [original ::: {Type}] [additional ::: {Type}] [original ~ additional]
+           (fl : folder additional) (r : $original)
+    : $(original ++ map option additional) =
+    r ++ @map0 [option] (fn [t ::_] => None) fl
+    
+fun update
+        [keep] [change] [keep ~ change]
+        (xs : $(keep ++ change)) (ys : $change)
+    : $(keep ++ change) =
+    xs --- change ++ ys
+
+fun optionify [ts ::: {Type}] (fl : folder ts) (r : $ts) : $(map option ts) =
+    @foldR [ident] [fn ts => $(map option ts)]
+     (fn [nm ::_] [v ::_] [r ::_] [[nm] ~ r] v vs =>
+             {nm = Some v} ++ vs)
+     {} fl r
+
 type options = {Legend : bool}
 type float_pair = {X : float, Y : float}
 type dataset = {Data : list float_pair, Fill : bool, ShowLine : bool}
@@ -86,11 +103,17 @@ fun main () =
 										      Fill=False, ShowLine=True} :: []},
 								 Options = {Legend = False}});
 			    return ()}></button>
-		<button value="Show sin plot (server+struct)"
-		onclick={fn _ => lst <- rpc(calc_sin());
+		<button value="Show sin+cos plot (server+struct)"
+		onclick={fn _ => lst <- rpc(calc_sin()); lst2 <- rpc(calc_cos());
 			    chart <- chartjsChartStruct c {Data={Datasets={Data=pairToXY lst,
-									   Fill=False, ShowLine=True} :: []},
-							   Options = {Legend = False}};
+									   Fill=Some False,
+									   ShowLine=Some True,
+									   BorderColor=Some "red"} ::
+												   {Data=pairToXY lst2,
+									   Fill=Some False,
+									   ShowLine=Some True,
+									  BorderColor=Some "blue"} :: []},
+							   Options = {Legend = Some False}};
 			    return ()}></button>
 		<p></p>
 		<crange source={mu} min={0.0} max={5.0} step={0.1}
