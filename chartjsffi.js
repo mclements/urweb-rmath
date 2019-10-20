@@ -41,6 +41,9 @@ function objectMap(object, mapFn) {
 }
 
 function urToObject(l) {
+    if (l == null) {
+	return null;
+    }
     // case: atom
     if (typeof(l) != 'object') {
 	return l;

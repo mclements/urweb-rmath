@@ -12,6 +12,7 @@ script https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js
 jsFunc Chartjsffi.chartjsChart = chartjsChart
 jsFunc Chartjsffi.chartjsChartJson = chartjsChartJson
 jsFunc Chartjsffi.chartjsChartStruct = chartjsChartStruct
+jsFunc Chartjsffi.chartjsChartStructDebug = chartjsChartStructDebug
 rewrite style Test/content content
 
 $/char
