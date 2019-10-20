@@ -41,18 +41,6 @@ fun optionify [ts ::: {Type}] (fl : folder ts) (r : $ts) : $(map option ts) =
              {nm = Some v} ++ vs)
      {} fl r
 
-type options = {Legend : bool}
-type float_pair = {X : float, Y : float}
-type dataset = {Data : list float_pair, Fill : bool, ShowLine : bool}
-type chartData = {Datasets : list dataset}
-type config = {ChartData : chartData, Options : options}
-
-val json_options : json options = json_record {Legend = "legend"}
-val json_float_pair : json float_pair = json_record {X = "x", Y = "y"}
-val json_dataset : json dataset = json_record {Data = "data", Fill = "fill", ShowLine = "showLine"}
-val json_chartData : json chartData = json_record {Datasets = "datasets"}
-val json_config : json config = json_record {ChartData="data", Options = "options"}
-
 fun pairToXY [a ::: Type] [b ::: Type] lst = List.mp (fn (x:a,y:b) => {X=x, Y=y}) lst
 
 fun main () =
@@ -97,12 +85,6 @@ fun main () =
 			    return ()}></button>
 		<button value="Show dnorm plot (server)"
 		onclick={fn _ => plot_dnorm()}></button>
-		<button value="Show sin plot (server+JSON)"
-		onclick={fn _ => lst <- rpc(calc_sin());
-			    chart <- chartjsChartJson c (toJson {ChartData={Datasets={Data=pairToXY lst,
-										      Fill=False, ShowLine=True} :: []},
-								 Options = {Legend = False}});
-			    return ()}></button>
 		<button value="Show sin+cos plot (server+struct)"
 		onclick={fn _ => lst <- rpc(calc_sin()); lst2 <- rpc(calc_cos());
 			    chart <- chartjsChartStruct c {Data={Datasets={Data=pairToXY lst,
