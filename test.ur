@@ -1,6 +1,5 @@
 style content
 
-open Json
 open Rmath
 open Chartjsffi
 
