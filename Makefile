@@ -19,7 +19,7 @@ all: test
 src: rmathffi.h rmathffi.c rmathffi.urs rmathffi.o rmath.ur rmath.urs rmath.urp
 
 test: src
-	(pkill test.exe || true) && ./driver.sh test 1
+	./driver.sh test 1
 
 rmath.urp: rmath.urp.in
 	${M4} ${M4FLAGS} ${M4SCRIPT} -D LIBRMATH=${LIBRMATH} rmath.urp.in > rmath.urp
@@ -37,5 +37,6 @@ rmath.urp: rmath.urp.in
 	${M4} ${M4FLAGS} ${M4SCRIPT} $< > $*.ur
 
 clean:
+	pkill test.exe || true
 	rm -f rmathffi.h rmathffi.c rmathffi.urs rmathffi.o rmath.urp rmath.ur rmath.urs
 	rm -f test.exe

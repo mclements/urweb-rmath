@@ -1,6 +1,6 @@
 
 type chartjschart
-type fullconfig = {Data: {Datasets : list {Data : list {X:float, Y:float},
+type fullconfig = {Data: {Datasets : list {Data : option (list {X:float, Y:float}),
 					   Fill : option bool,
 					   ShowLine : option bool,
 					   BorderColor : option string,
@@ -9,7 +9,7 @@ type fullconfig = {Data: {Datasets : list {Data : list {X:float, Y:float},
 		   Options : {Legend : option bool,
 			      ShowLines : option bool}}
 
-val chartjsChart : id -> list (float*float) -> transaction chartjschart
+val chartjsChart : id -> list {X:float, Y:float} -> transaction chartjschart
 
 val chartjsChartJson : id -> string -> transaction chartjschart
 

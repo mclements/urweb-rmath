@@ -1,5 +1,6 @@
 debug
 library rmath
+library ../UrLib/UrLib
 allow url http://www.pirilampo.org/styles/readtheorg/css/htmlize.css
 allow url http://www.pirilampo.org/styles/readtheorg/css/readtheorg.css
 allow url http://www.impredicative.com/ur/

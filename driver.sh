@@ -12,6 +12,7 @@ TESTCAP="$(tr '[:lower:]' '[:upper:]' <<< ${1:0:1})${1:1}"
 rm -f $TESTPID $TESTSRV
 urweb -debug -boot -noEmacs "$1" || exit 1
 
+pkill $1.exe || true
 $TESTSRV -q -a 127.0.0.1 &
 echo $! >> $TESTPID
 ## wget http://localhost:8080/$TESTCAP/main -O -

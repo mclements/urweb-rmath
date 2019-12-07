@@ -5,11 +5,11 @@ open Chartjsffi
 
 val pi = 3.141592653589793
 
-(* val calc_f : float -> float -> float -> (float -> float) -> list (float * float) *)
+(* val calc_f : float -> float -> float -> (float -> float) -> list {X: float, Y: float} *)
 fun calc_f from eps to f =
     let
 	fun loop x agg =
-	    if x>to then agg else (loop (x+eps) ((x,f x) :: agg))
+	    if x>to then agg else (loop (x+eps) ({X=x, Y=(f x)} :: agg))
     in
 	loop from []
     end
@@ -27,12 +27,26 @@ fun expand [original ::: {Type}] [additional ::: {Type}] [original ~ additional]
            (fl : folder additional) (r : $original)
     : $(original ++ map option additional) =
     r ++ @map0 [option] (fn [t ::_] => None) fl
-    
+
+(* fun allNone [tr :: {Type}]  *)
+(*            (fl : folder tr)  *)
+(*     : $tr = *)
+(*     @map0 [ident] (fn [t ::_] => None) fl *)
+
 fun update
         [keep] [change] [keep ~ change]
         (xs : $(keep ++ change)) (ys : $change)
     : $(keep ++ change) =
     xs --- change ++ ys
+    
+(* fun update2 *)
+(*         [keep] [change] [keep ~ change] (fl : folder change) *)
+(*         (xs : $(keep ++ change)) (ys : $change) *)
+(*     : $(keep ++ change) = *)
+(*     @foldR [ident] [fn change => $(keep ++ change)] *)
+(*     (fn [nm ::_] [v ::_] [r ::_] [[nm] ~ r] v vs => *)
+(* 	(vs -- nm) ++ {nm = v}) *)
+(*     xs fl ys *)
 
 con optionify = map option
 
@@ -42,14 +56,78 @@ fun optionify [ts ::: {Type}] (fl : folder ts) (r : $ts) : $(optionify ts) =
              {nm = Some v} ++ vs)
      {} fl r
 
+(* fun defaultSetting *)
+(* 	[keep] [change] [keep ~ change] *)
+(* 	(args : $change) *)
+(*     : $(keep ++ change) = *)
+(*     update {A=1, B=2} args *)
+
+(* fun defaultSetting *)
+(*         [keep] [change] [keep ~ change] *)
+(*         (args : $change) *)
+(*     : $(keep ++ change) = *)
+(*     ({A=1,B=1} : $(keep ++ change)) --- change ++ args *)
+
+val defaultSetting = update {A=1, B=2}
+
+val _ = defaultSetting {A=2} (* {A=2, B=2} *)
+(* val _ = defaultSetting {B=3} (\* {A=1, B=3} *\) *)
+	
+    
 con data = list {X : float, Y : float}
+con options = {Legend : option bool,
+	       ShowLines : option bool}
+con dataset = {Data: option data,
+	       Fill : option bool,
+	       ShowLine : option bool,
+	       Label : option string,
+	       BorderColor : option string}
+	       
+fun makeOptions args : options =
+    update ({Legend = None : option bool,
+	     ShowLines = None : option bool} : options)
+	   (optionify args)
 
-fun pairToXY [a ::: Type] [b ::: Type] lst = List.mp (fn (x:a,y:b) => {X=x, Y=y}) lst
+fun makeDataset args =
+    update ({Data=None : option data,
+	     Fill=None : option bool,
+	     ShowLine=None : option bool,
+	     Label=None : option string,
+	     BorderColor=None : option string} : dataset)
+	   (optionify args)
+    
+(* fun makeDataset [keep] [change] [keep ~ change] (args : $change) : $(keep ++ change) = *)
+(*     update ({Data=None : option data, *)
+(* 	     Fill=None : option bool, *)
+(* 	     ShowLine=None : option bool, *)
+(* 	     Label=None : option string, *)
+(* 	     BorderColor=None : option string} : $(keep ++ change)) *)
+(* 	   args *)
 
-fun makeOptions args = update {Legend = None, ShowLines = None} (optionify args)
+(* fun makeOptions [keep] [change] [keep ~ change] (args : $change) : $(optionify (keep ++ change)) = *)
+(*     update {Legend = None : option bool, *)
+(* 	     ShowLines = None : option bool}  *)
+(* 	   (optionify args) *)
 
-fun makeDataset args = update {Data=[] : data, Fill=None, ShowLine=None, Label=None, BorderColor=None} (optionify(args -- #Data) ++ {Data = args.Data}) 
+(* fun makeDataset [keep] [change] [keep ~ change] (args : $change) : $(optionify (keep ++ change)) = *)
+(*     update ({Data=None : option data, *)
+(* 	     Fill=None : option bool, *)
+(* 	     ShowLine=None : option bool, *)
+(* 	     Label=None : option string, *)
+(* 	     BorderColor=None : option string} : $(optionify (keep ++ change))) *)
+(* 	   (optionify args) *)
 
+(* fun makeDataset args : dataset = *)
+(*     update (allNone dataset) (optionify args) *)
+
+(* fun chartjs *)
+(* 	id *)
+(* 	args *)
+(* 	: transaction chartjschart = *)
+(*     chartjsChartStruct id {Typ = args.Typ, *)
+(* 			   Options = makeOptions args.Options, *)
+(* 			   Data = {Datasets = List.mp makeDataset args.Data.Datasets}} *)
+		       
 fun main () =
     c <- fresh;
     mu <- source (Some 3.0);
@@ -82,12 +160,8 @@ fun main () =
 		onclick={fn _ => lst <- calc_sin();
 			    chart <- chartjsChart c lst;
 			    return ()}></button>
-		<button value="Show cos plot"
-		onclick={fn _ => lst <- calc_cos();
-			    chart <- chartjsChart c lst;
-			    return ()}></button>
-		<button value="Show sin plot (server)"
-		onclick={fn _ => lst <- rpc(calc_sin());
+		<button value="Show cos plot (server)"
+		onclick={fn _ => lst <- rpc(calc_cos());
 			    chart <- chartjsChart c lst;
 			    return ()}></button>
 		<button value="Show dnorm plot (server)"
@@ -97,14 +171,22 @@ fun main () =
 			    chart <- chartjsChartStruct
 					 c
 					 {Typ="scatter", (* shortened keyword *)
-					  Data={Datasets = (makeDataset {Data=pairToXY lst,
-									 Fill=False,
-									 BorderColor="red",
-									 Label="Sine"}) ::
-							(makeDataset {Data=pairToXY lst2,
-								      Fill=False,
-								      BorderColor="blue",
-								      Label="Cosine"}) :: []},
+					  Data={Datasets = makeDataset {Data=lst,
+					  				 Fill= False,
+					  				 BorderColor="red",
+					  				 Label="Sine"} ::
+					  		makeDataset {Data=lst2,
+					  			      Fill=False,
+					  			      BorderColor="blue",
+					  			      Label="Cosine"} :: []},
+					  (* Data={Datasets = makeDataset {Data=Some lst, *)
+					  (* 				 Fill=Some False, *)
+					  (* 				 BorderColor=Some "red", *)
+					  (* 				 Label=Some "Sine"} :: *)
+					  (* 		makeDataset {Data=Some lst2, *)
+					  (* 			      Fill=Some False, *)
+					  (* 			      BorderColor=Some "blue", *)
+					  (* 			      Label=Some "Cosine"} :: []}, *)
 					  Options = makeOptions {ShowLines = True}};
 			    return ()}></button>
 		<p></p>
