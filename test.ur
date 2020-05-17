@@ -23,31 +23,6 @@ fun dn [a] (_ : show a) (x : source a) : xbody = <xml>
   <dyn signal={v <- signal x; return (txt v)}></dyn>
 </xml>
 						 
-fun expand [original ::: {Type}] [additional ::: {Type}] [original ~ additional]
-           (fl : folder additional) (r : $original)
-    : $(original ++ map option additional) =
-    r ++ @map0 [option] (fn [t ::_] => None) fl
-
-(* fun allNone [tr :: {Type}]  *)
-(*            (fl : folder tr)  *)
-(*     : $tr = *)
-(*     @map0 [ident] (fn [t ::_] => None) fl *)
-
-fun update
-        [keep] [change] [keep ~ change]
-        (xs : $(keep ++ change)) (ys : $change)
-    : $(keep ++ change) =
-    xs --- change ++ ys
-    
-(* fun update2 *)
-(*         [keep] [change] [keep ~ change] (fl : folder change) *)
-(*         (xs : $(keep ++ change)) (ys : $change) *)
-(*     : $(keep ++ change) = *)
-(*     @foldR [ident] [fn change => $(keep ++ change)] *)
-(*     (fn [nm ::_] [v ::_] [r ::_] [[nm] ~ r] v vs => *)
-(* 	(vs -- nm) ++ {nm = v}) *)
-(*     xs fl ys *)
-
 con optionify = map option
 
 fun optionify [ts ::: {Type}] (fl : folder ts) (r : $ts) : $(optionify ts) =
@@ -55,79 +30,7 @@ fun optionify [ts ::: {Type}] (fl : folder ts) (r : $ts) : $(optionify ts) =
      (fn [nm ::_] [v ::_] [r ::_] [[nm] ~ r] v vs =>
              {nm = Some v} ++ vs)
      {} fl r
-
-(* fun defaultSetting *)
-(* 	[keep] [change] [keep ~ change] *)
-(* 	(args : $change) *)
-(*     : $(keep ++ change) = *)
-(*     update {A=1, B=2} args *)
-
-(* fun defaultSetting *)
-(*         [keep] [change] [keep ~ change] *)
-(*         (args : $change) *)
-(*     : $(keep ++ change) = *)
-(*     ({A=1,B=1} : $(keep ++ change)) --- change ++ args *)
-
-val defaultSetting = update {A=1, B=2}
-
-val _ = defaultSetting {A=2} (* {A=2, B=2} *)
-(* val _ = defaultSetting {B=3} (\* {A=1, B=3} *\) *)
-	
-    
-con data = list {X : float, Y : float}
-con options = {Legend : option bool,
-	       ShowLines : option bool}
-con dataset = {Data: option data,
-	       Fill : option bool,
-	       ShowLine : option bool,
-	       Label : option string,
-	       BorderColor : option string}
 	       
-fun makeOptions args : options =
-    update ({Legend = None : option bool,
-	     ShowLines = None : option bool} : options)
-	   (optionify args)
-
-fun makeDataset args =
-    update ({Data=None : option data,
-	     Fill=None : option bool,
-	     ShowLine=None : option bool,
-	     Label=None : option string,
-	     BorderColor=None : option string} : dataset)
-	   (optionify args)
-    
-(* fun makeDataset [keep] [change] [keep ~ change] (args : $change) : $(keep ++ change) = *)
-(*     update ({Data=None : option data, *)
-(* 	     Fill=None : option bool, *)
-(* 	     ShowLine=None : option bool, *)
-(* 	     Label=None : option string, *)
-(* 	     BorderColor=None : option string} : $(keep ++ change)) *)
-(* 	   args *)
-
-(* fun makeOptions [keep] [change] [keep ~ change] (args : $change) : $(optionify (keep ++ change)) = *)
-(*     update {Legend = None : option bool, *)
-(* 	     ShowLines = None : option bool}  *)
-(* 	   (optionify args) *)
-
-(* fun makeDataset [keep] [change] [keep ~ change] (args : $change) : $(optionify (keep ++ change)) = *)
-(*     update ({Data=None : option data, *)
-(* 	     Fill=None : option bool, *)
-(* 	     ShowLine=None : option bool, *)
-(* 	     Label=None : option string, *)
-(* 	     BorderColor=None : option string} : $(optionify (keep ++ change))) *)
-(* 	   (optionify args) *)
-
-(* fun makeDataset args : dataset = *)
-(*     update (allNone dataset) (optionify args) *)
-
-(* fun chartjs *)
-(* 	id *)
-(* 	args *)
-(* 	: transaction chartjschart = *)
-(*     chartjsChartStruct id {Typ = args.Typ, *)
-(* 			   Options = makeOptions args.Options, *)
-(* 			   Data = {Datasets = List.mp makeDataset args.Data.Datasets}} *)
-		       
 fun main () =
     c <- fresh;
     mu <- source (Some 3.0);
@@ -171,23 +74,18 @@ fun main () =
 			    chart <- chartjsChartStruct
 					 c
 					 {Typ="scatter", (* shortened keyword *)
-					  Data={Datasets = makeDataset {Data=lst,
-					  				 Fill= False,
-					  				 BorderColor="red",
-					  				 Label="Sine"} ::
-					  		makeDataset {Data=lst2,
-					  			      Fill=False,
-					  			      BorderColor="blue",
-					  			      Label="Cosine"} :: []},
-					  (* Data={Datasets = makeDataset {Data=Some lst, *)
-					  (* 				 Fill=Some False, *)
-					  (* 				 BorderColor=Some "red", *)
-					  (* 				 Label=Some "Sine"} :: *)
-					  (* 		makeDataset {Data=Some lst2, *)
-					  (* 			      Fill=Some False, *)
-					  (* 			      BorderColor=Some "blue", *)
-					  (* 			      Label=Some "Cosine"} :: []}, *)
-					  Options = makeOptions {ShowLines = True}};
+					  Data={Datasets =
+						(Data lst ::
+					  	 Fill False ::
+					  	 BorderColor "red" ::
+						 ShowLine True ::
+					  	 Label "Sine" :: []) ::
+						(Data lst2 ::
+					  	 Fill False ::
+					  	 BorderColor "blue" ::
+						 ShowLine True ::
+					  	 Label "Cosine" :: []) :: []},
+					  Options = (ShowLines True :: (Legend (Display True :: [])) :: [])};
 			    return ()}></button>
 		<p></p>
 		<crange source={mu} min={0.0} max={5.0} step={0.1}
