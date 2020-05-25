@@ -14,12 +14,14 @@ con fullconfig = {Data: {Datasets : list (list dataset)},
 		  Typ : string,
 		  Options : list options}
 
-val chartjsChart : id -> list {X:float, Y:float} -> transaction chartjschart
+(* deprecated *)
+val chartjsChartOld : id -> list {X:float, Y:float} -> transaction chartjschart
 
+(* not used *)
 val chartjsChartJson : id -> string -> transaction chartjschart
 
-val chartjsChartStruct : id -> fullconfig -> transaction chartjschart
+val chartjsChart : id -> fullconfig -> transaction chartjschart
 
-val chartjsChartStructDebug : id -> fullconfig -> transaction chartjschart
+val chartjsChartDebug : id -> fullconfig -> transaction chartjschart
 
 val canvas : bodyTag ([Width = int, Height = int] ++ boxAttrs)

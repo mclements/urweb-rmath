@@ -1,4 +1,4 @@
-function chartjsChart(id, l) {
+function chartjsChartOld(id, l) {
 
     function listToDataPoints(l) {
 	var acc = [];
@@ -18,6 +18,7 @@ function chartjsChart(id, l) {
 			      type : 'scatter',
 			      data : {datasets: [{data : datapoints,
 						  fill : false,
+						  borderColor : "green",
 						  showLine : true}]},
 			      options : {legend : false}
 			  });
@@ -108,7 +109,7 @@ function chartjsArgs(obj) {
                 var y = a[i][key];
                 // arguments that are part of a list
                 if (key=='data' && Array.isArray(y)) {
-                    // unchanged
+                    y = y.map(convert);
                 }
                 else if (key=='legend' && Array.isArray(y)) {
 		    // nested arguments
@@ -139,7 +140,7 @@ function chartjsArgs(obj) {
     return convert(obj);
 };
 
-function chartjsChartStruct(id, obj) {
+function chartjsChart(id, obj) {
 
     var ctx = document.getElementById(id).getContext('2d');
 
@@ -148,11 +149,11 @@ function chartjsChartStruct(id, obj) {
     return chart;
 }
 
-function chartjsChartStructDebug(id, obj) {
+function chartjsChartDebug(id, obj) {
 
     // alert(JSON.stringify(obj));
     alert(JSON.stringify(objectifyUr(obj,urNewKeyMap)));
     alert(JSON.stringify(chartjsArgs(objectifyUr(obj,urNewKeyMap))));
     
-    return chartjsChartStruct(id,obj);
+    return chartjsChart(id,obj);
 }

@@ -22,15 +22,31 @@ val calc_cos = calc_f2 cos
 fun dn [a] (_ : show a) (x : source a) : xbody = <xml>
   <dyn signal={v <- signal x; return (txt v)}></dyn>
 </xml>
-						 
-con optionify = map option
 
-fun optionify [ts ::: {Type}] (fl : folder ts) (r : $ts) : $(optionify ts) =
-    @foldR [ident] [fn ts => $(optionify ts)]
-     (fn [nm ::_] [v ::_] [r ::_] [[nm] ~ r] v vs =>
-             {nm = Some v} ++ vs)
-     {} fl r
-	       
+val baseXY : fullconfig =
+    {Typ = "scatter",
+     Data = {Datasets = []},
+     Options = ShowLines True :: []}
+
+fun addLine (base : fullconfig, data : data, borderColor : string, label : string) : fullconfig =
+    {Typ = base.Typ,
+     Data = {Datasets = List.append base.Data.Datasets ((Data data :: BorderColor borderColor :: Fill False :: ShowLine True :: Label label :: []) :: [])},
+     Options =  base.Options}
+
+fun noLegend (base : fullconfig) : fullconfig =
+    let
+	val {Typ=typ, Data=data, Options=options} = base
+    in
+	{Typ=typ, Data=data, Options=List.append options ((Legend (Display False :: [])) :: [])}
+    end
+
+fun addLegend (base : fullconfig) : fullconfig =
+    let
+	val {Typ=typ, Data=data, Options=options} = base
+    in
+	{Typ=typ, Data=data, Options=List.append options ((Legend (Display True :: [])) :: [])}
+    end
+
 fun main () =
     c <- fresh;
     mu <- source (Some 3.0);
@@ -40,7 +56,7 @@ fun main () =
 	    m <- get mu;
 	    s <- get sigma;
 	    lst <- rpc(calc_dnorm (Option.get 0.0 m) (Option.get 1.0 s));
-	    chart <- chartjsChart c lst;
+	    chart <- chartjsChart c (addLegend(noLegend(addLine(baseXY, lst, "blue", "Y"))));
 	    return ()
     in
 	return <xml>
@@ -61,31 +77,20 @@ fun main () =
 		<p>Library requirements on Ubuntu/Debian: <tt>apt install urweb r-mathlib pkg-config</tt></p>
 		<button value="Show sin plot"
 		onclick={fn _ => lst <- calc_sin();
-			    chart <- chartjsChart c lst;
+			    chart <- chartjsChart c (noLegend(addLine(baseXY, lst, "green", "Y")));
 			    return ()}></button>
 		<button value="Show cos plot (server)"
 		onclick={fn _ => lst <- rpc(calc_cos());
-			    chart <- chartjsChart c lst;
+			    chart <- chartjsChart c (noLegend(addLine(baseXY, lst, "red", "Y")));
 			    return ()}></button>
 		<button value="Show dnorm plot (server)"
 		onclick={fn _ => plot_dnorm()}></button>
 		<button value="Show sin+cos plot (server+struct)"
 		onclick={fn _ => lst <- rpc(calc_sin()); lst2 <- rpc(calc_cos());
-			    chart <- chartjsChartStruct
+			    chart <- chartjsChart
 					 c
-					 {Typ="scatter", (* shortened keyword *)
-					  Data={Datasets =
-						(Data lst ::
-					  	 Fill False ::
-					  	 BorderColor "red" ::
-						 ShowLine True ::
-					  	 Label "Sine" :: []) ::
-						(Data lst2 ::
-					  	 Fill False ::
-					  	 BorderColor "blue" ::
-						 ShowLine True ::
-					  	 Label "Cosine" :: []) :: []},
-					  Options = (ShowLines True :: (Legend (Display True :: [])) :: [])};
+					 (addLine(addLine(baseXY, lst, "red", "Sine"),
+						  lst2, "blue", "Cosine"));
 			    return ()}></button>
 		<p></p>
 		<crange source={mu} min={0.0} max={5.0} step={0.1}
