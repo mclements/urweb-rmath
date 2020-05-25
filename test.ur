@@ -23,7 +23,7 @@ fun dn [a] (_ : show a) (x : source a) : xbody = <xml>
   <dyn signal={v <- signal x; return (txt v)}></dyn>
 </xml>
 
-val baseXY : fullconfig =
+val baseConfig : fullconfig =
     {Typ = "scatter",
      Data = {Datasets = []},
      Options = ShowLines True :: []}
@@ -40,13 +40,6 @@ fun noLegend (base : fullconfig) : fullconfig =
 	{Typ=typ, Data=data, Options=List.append options ((Legend (Display False :: [])) :: [])}
     end
 
-fun addLegend (base : fullconfig) : fullconfig =
-    let
-	val {Typ=typ, Data=data, Options=options} = base
-    in
-	{Typ=typ, Data=data, Options=List.append options ((Legend (Display True :: [])) :: [])}
-    end
-
 fun main () =
     c <- fresh;
     mu <- source (Some 3.0);
@@ -56,7 +49,7 @@ fun main () =
 	    m <- get mu;
 	    s <- get sigma;
 	    lst <- rpc(calc_dnorm (Option.get 0.0 m) (Option.get 1.0 s));
-	    chart <- chartjsChart c (addLegend(noLegend(addLine(baseXY, lst, "blue", "Y"))));
+	    chart <- chartjsChart c (noLegend(addLine(baseConfig, lst, "blue", "Y")));
 	    return ()
     in
 	return <xml>
@@ -77,11 +70,11 @@ fun main () =
 		<p>Library requirements on Ubuntu/Debian: <tt>apt install urweb r-mathlib pkg-config</tt></p>
 		<button value="Show sin plot"
 		onclick={fn _ => lst <- calc_sin();
-			    chart <- chartjsChart c (noLegend(addLine(baseXY, lst, "green", "Y")));
+			    chart <- chartjsChart c (noLegend(addLine(baseConfig, lst, "green", "Y")));
 			    return ()}></button>
 		<button value="Show cos plot (server)"
 		onclick={fn _ => lst <- rpc(calc_cos());
-			    chart <- chartjsChart c (noLegend(addLine(baseXY, lst, "red", "Y")));
+			    chart <- chartjsChart c (noLegend(addLine(baseConfig, lst, "red", "Y")));
 			    return ()}></button>
 		<button value="Show dnorm plot (server)"
 		onclick={fn _ => plot_dnorm()}></button>
@@ -89,7 +82,7 @@ fun main () =
 		onclick={fn _ => lst <- rpc(calc_sin()); lst2 <- rpc(calc_cos());
 			    chart <- chartjsChart
 					 c
-					 (addLine(addLine(baseXY, lst, "red", "Sine"),
+					 (addLine(addLine(baseConfig, lst, "red", "Sine"),
 						  lst2, "blue", "Cosine"));
 			    return ()}></button>
 		<p></p>
